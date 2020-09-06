@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Session as FacadesSession;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,4 +24,18 @@ Route::get('/home', 'HomeController@index')->name('home');
 
 Route::get('/test', function () {
     return view('admin.pages.index');
+});
+
+Route::get('/locale/{locale}',function($locale){
+    FacadesSession::put('locale',$locale);
+    return redirect()->back();
+});
+
+Route::group(['prefix' => 'manager'], function () {
+
+    Route::get('locale/{locale}',function($locale){
+        // dd($locale);
+        FacadesSession::put('locale',$locale);
+        return redirect()->back();
+    });
 });

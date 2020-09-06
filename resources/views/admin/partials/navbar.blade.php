@@ -3,13 +3,31 @@
         <div class="navbar-header">
             <a href="javascript:void(0);" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse" aria-expanded="false"></a>
             <a href="javascript:void(0);" class="bars"></a>
-            <a class="navbar-brand" href="index.html">ADMIN</a>
+            <a class="navbar-brand" href="index.html">{{__('home.ADMIN')}}</a>
         </div>
         <div class="collapse navbar-collapse" id="navbar-collapse">
             <ul class="nav navbar-nav navbar-right">
                 <!-- Call Search -->
                 <li><a href="javascript:void(0);" class="js-search" data-close="true"><i class="material-icons">search</i></a></li>
                 <!-- #END# Call Search -->
+                 <!-- Notifications -->
+                 <li class="dropdown">
+                    <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button">
+                        <i class="material-icons">language</i>
+                    </a>
+                    <ul class="dropdown-menu ">
+                        
+                        @foreach ($languages as $item)
+                        <li>
+                            <a href="/manager/locale/{{$item->title}}">
+                                <img src="/admin/theme/images/iran.png" width="28" height="28" alt="{{$item->name}}">
+                               <span style="margin-left: 10px">{{$item->name}}</span> 
+                            </a>
+                        </li>
+                        @endforeach
+                    </ul>
+                </li>
+                <!-- #END# Notifications -->
                 <!-- Notifications -->
                 <li class="dropdown">
                     <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button">
@@ -17,7 +35,7 @@
                         <span class="label-count">7</span>
                     </a>
                     <ul class="dropdown-menu">
-                        <li class="header">NOTIFICATIONS</li>
+                        <li class="header">{{__('home.NOTIFICATIONS')}}</li>
                         <li class="body">
                             <ul class="menu">
                                 <li>
@@ -114,7 +132,7 @@
                             </ul>
                         </li>
                         <li class="footer">
-                            <a href="javascript:void(0);">View All Notifications</a>
+                            <a href="javascript:void(0);">{{__('home.View All Notifications')}}</a>
                         </li>
                     </ul>
                 </li>
