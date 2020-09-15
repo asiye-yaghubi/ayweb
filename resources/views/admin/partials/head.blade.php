@@ -2,7 +2,9 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=Edge">
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    <title>Welcome To | Admin</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    @yield('title-page')
+    
     <!-- Favicon-->
     <link rel="icon" href="/admin/theme/favicon.ico" type="image/x-icon">
 
@@ -19,8 +21,8 @@
     <!-- Animation Css -->
     <link href="/admin/theme/plugins/animate-css/animate.css" rel="stylesheet" />
 
-    <!-- Morris Chart Css-->
-    <link href="/admin/theme/plugins/morrisjs/morris.css" rel="stylesheet" />
+     <!-- JQuery DataTable Css -->
+     <link href="/admin/theme/plugins/jquery-datatable/skin/bootstrap/css/dataTables.bootstrap.css" rel="stylesheet">
 
     <!-- Custom Css -->
     <link href="/admin/theme/css/style.css" rel="stylesheet">

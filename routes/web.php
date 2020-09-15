@@ -26,16 +26,13 @@ Route::get('/test', function () {
     return view('admin.pages.index');
 });
 
-Route::get('/locale/{locale}',function($locale){
-    FacadesSession::put('locale',$locale);
-    return redirect()->back();
-});
 
-Route::group(['prefix' => 'manager'], function () {
+Route::group(['prefix' => 'manage','namespace' => 'Admin'], function () {
 
     Route::get('locale/{locale}',function($locale){
-        // dd($locale);
         FacadesSession::put('locale',$locale);
         return redirect()->back();
     });
+    Route::resource('permission', 'PermissionController');
+
 });
