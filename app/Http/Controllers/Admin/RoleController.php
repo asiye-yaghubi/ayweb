@@ -1,6 +1,6 @@
 <?php
 
-slugspace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Permission;
@@ -17,9 +17,9 @@ class RoleController extends Controller
      */
     public function index()
     {
-        $roles = Role::orderBy('id','desc')->paginate(5);
+        $roles = Role::orderBy('id','desc')->get();
         $permissions = Permission::get();
-        return view('admin.role.role',compact('roles','permissions'));
+        return view('admin.pages.role.role',compact('roles','permissions'));
     }
 
     /**
@@ -40,24 +40,25 @@ class RoleController extends Controller
      */
     public function store(Request $request)
     {
+        // dd($request);
         $validator = Validator::make($request->all(), [
-            'slug' => 'required|string',
-            'title' => 'required',
+            // 'slug' => 'required|alpha_dash|max:255|unique:roles,slug',
+            'slug' => 'required|alpha_dash|max:255',
+            'title' => 'required|string',
             'permission_id' => 'required',
 		]);
-       
-
-        $arr = array('msg' => 'خطا!', 'status' => false);      
+      
+        $arr = array('status' => false);      
         if($validator->passes()){ 
 
             $role = Role::updateOrCreate(
             ['id' => $request->value_id],
             ['slug'=>$request->slug,'title'=>$request->title]
-        );  
+        );     
         $role->permissions()->sync($request->input('permission_id'));
-        $permissions = $role->permissions;
-        $arr = array('msg' => 'باموفقیت انجام شد!', 'status' => true);
-        return response(["role"=>$role,"arr"=>$arr,'permissions'=>$permissions]);
+
+        $arr = array('status' => true);
+        return response(["role"=>$role,"arr"=>$arr]);
         }
         return response(["arr"=>$arr,'errors'=>$validator->errors()->all()]);
     }
@@ -81,10 +82,19 @@ class RoleController extends Controller
      */
     public function edit($id)
     {
+        // dd('kk');
         $where = array('id' => $id);
         $role  = Role::where($where)->first();
-        $select[] = $role->permissions()->pluck('id');
-
+        if($role->permissions) {
+            foreach($role->permissions as $item) {
+                $select[] = $item->title;
+            }
+        }  
+        else{
+            $select[] = [0 => false];
+        }  
+        // dd($select); 
+        
         return response()->json(['role'=>$role,'select'=>$select]);
     }
 

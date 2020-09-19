@@ -1,11 +1,14 @@
 @extends('admin.layout.app')
 
 @section('title-page')
-<title>Role</title>
+<title>{{__('home.Roles')}}</title>
 @endsection
 
 @section('extra-css-header')
 <link href="/admin/theme/plugins/sweetalert/sweetalert.css" rel="stylesheet" />
+<link href="/admin/theme/plugins/multi-select/css/multi-select.css" rel="stylesheet">
+<link href="/admin/theme/plugins/bootstrap-select/css/bootstrap-select.css" rel="stylesheet" />
+
 @endsection
 
 @section('content')
@@ -19,7 +22,7 @@
         <div class="card">
             <div class="header">
                 <h2>
-                    ROLES
+                    {{__('home.ROLES')}}
                 </h2>
                 <ul class="header-dropdown m-r--5">
                     <li class="dropdown">
@@ -29,11 +32,11 @@
                         </a>
                         <ul class="dropdown-menu pull-right js-sweetalert-asiye">
                             <li>
-                                <button type="button" class="btn bg-green waves-effec m-r-20" type="button"
+                                <a href="javascript:void(0);" class="btn bg-green waves-effec" 
                                     id="create-new-value" data-toggle="modal">
                                     <i class="material-icons">add_circle</i>
-                                    New Role
-                                </button>
+                                    {{__('home.New Role')}}
+                                </a>
                             </li>
                         </ul>
                     </li>
@@ -49,6 +52,7 @@
                                 <th>{{__('home.id')}}</th>
                                 <th>{{__('home.Title')}}</th>
                                 <th>{{__('home.Slug')}}</th>
+                                <th>{{__('home.Permissions')}}</th>
                                 <th>{{__('home.Action')}}</th>
                             </tr>
                         </thead>
@@ -60,6 +64,11 @@
                                 <td><a href="javascript:void(0)" data-id="{{ $u_info->id }}"
                                         id="show-value">{{ $u_info->title }}</a></td>
                                 <td>{{ $u_info->slug }}</td>
+                                <td>
+                                    @foreach ($u_info->permissions as $item)
+                                        {{ $item->title }}
+                                    @endforeach
+                                </td>
                                 <td>
                                     <a href="javascript:void(0)" id="edit-value" data-id="{{ $u_info->id }}"
                                         class="btn bg-blue btn-circle waves-effect waves-circle waves-float">
@@ -109,6 +118,16 @@
                         </div>
                     </div>
                     <div class="col-sm-12">
+                        <p>
+                            <b>{{__('home.Select Permissions')}}</b>
+                        </p>
+                        <select class="form-control show-tick" multiple  name="permission_id[]" id="permission_id">
+                            @foreach ($permissions as $item)
+                            <option value="{{ $item->id }}">{{ $item->title }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-sm-12">
                         <div class="form-group form-float">
                             <input type="hidden" class="form-control" id="value_id" name="value_id">
                         </div>
@@ -127,10 +146,9 @@
 
 @endsection
 @section('extra-script-footer')
-<!-- SweetAlert Plugin Js -->
 <script src="/admin/theme/plugins/sweetalert/sweetalert.min.js"></script>
-<!-- dialog Plugin Js -->
 <script src="/admin/theme/js/pages/ui/dialogs.js"></script>
+<script src="/admin/theme/plugins/multi-select/js/jquery.multi-select.js"></script>
 
 <script>
     $(document).ready(function() {
@@ -141,7 +159,9 @@
         });
         /*  When value click add value button */
         $('#create-new-value').click(function() {
+            $('.inner>li').removeClass('selected');
             $('#valueForm')[0].reset();
+            $('.filter-option').text("{{__('home.Nothing selected')}}");
             $('#msg_div').empty();
             $('#msg_div').removeClass('alert-danger');
             $('#msg_div').removeClass('alert-success');
@@ -156,7 +176,7 @@
         /* When click edit value */
         $('body').on('click', '#edit-value', function() {
             var value_id = $(this).data('id');
-            $.get("{{ url('manage/permission')}}" + '/' + value_id + '/edit', function(data) {
+            $.get("{{ url('manage/role')}}" + '/' + value_id + '/edit', function(data) {
                 $('#msg_div').empty();
                 $('#msg_div').removeClass('alert-danger');
                 $('#valueCrudModal').html("{{__('home.edit information')}}");
@@ -165,27 +185,43 @@
                 $('#msg_div').removeClass('alert-success');
                 $('#btn-save').html("{{__('home.EDIT RECORD')}}");
                 $('#ajax-crud-modal').modal('show');
-                $('#value_id').val(data.id);
-                $('#slug').val(data.slug);
-                $('#title').val(data.title);
+                $('#value_id').val(data.role.id);
+                $('#slug').val(data.role.slug);
+                $('#title').val(data.role.title);
+                if(data.select != false) {
+                    $('.filter-option').text('');
+                    $.each(data.select,function(i,val)
+                    {
+                        $('.filter-option').append(val + ',');
+                        $(".inner li").each((id, elem) => { 
+                            if ($(elem).text().trim() == val) { 
+                                $(elem).addClass('selected');
+                            } 
+                        }); 
+                    });
+                }
+                
             })
         });
         /* When click show value */
         $('body').on('click', '#show-value', function() {
             var value_id = $(this).data('id');
-            $.get("{{ url('manage/permission')}}" + '/' + value_id + '/edit', function(data) {
+            $.get("{{ url('manage/role')}}" + '/' + value_id + '/edit', function(data) {
+                var permissions_select = data.select.toString();
+                // alert(permissions_select);
                 swal({
                     title: "<span style=\"color: #607D8B\"><span style=\"color: #00BCD4\">Id : </span>" +
-                        data.id + "</span>",
+                        data.role.id + "</span>",
                     text: "<div style=\"color: #607D8B\"><span style=\"color: #00BCD4\">Title : </span>" +
-                        data.title +
+                        data.role.title +
                         "</div><div style=\"color: #607D8B\"><span style=\"color: #00BCD4\">Slug : </span>" +
-                        data.slug + "</div>",
-                    html: true
-                });
-                $('#value_id').val(data.id);
-                $('#slug').val(data.slug);
-                $('#title').val(data.title);
+                        data.role.slug +
+                        "</div><div style=\"color: #607D8B\"><span style=\"color: #00BCD4\">Permissions : </span>" 
+                        + "<span id='per'>" 
+                        + permissions_select
+                        + "</span></div>",
+                    html: true,
+                });   
             })
         });
         //delete value 
@@ -205,7 +241,7 @@
                 if (isConfirm) {
                     $.ajax({
                         type: "DELETE",
-                        url: "{{ url('manage/permission')}}" + '/' + value_id,
+                        url: "{{ url('manage/role')}}" + '/' + value_id,
                         success: function(data) {
                             $("#value_id_" + value_id).remove();
                             swal("Deleted!",
@@ -229,7 +265,7 @@
                     $('#btn-save').attr("disabled", true);
                     $.ajax({
                         data: $('#valueForm').serialize(),
-                        url: "{{ route('permission.store')}}",
+                        url: "{{ route('role.store')}}",
                         type: "POST",
                         dataType: 'json',
                         success: function(data) {
@@ -240,6 +276,8 @@
                                 $('#res_message').show();
                             } else {
                                 $('#msg_div').addClass('alert-danger');
+                                $('#btn-save').attr("disabled", false);
+                                $('#btn-save').html("{{__('home.SAVE RECORD')}}");
                                 $('#msg_div').show();
                                 $('#res_message').show();
                                 jQuery('.alert-danger').append('<p>' +
@@ -250,24 +288,24 @@
                                         value + '</p>');
                                 });
                             }
-                            var value = '<tr id="value_id_' + data.permission.id +
-                                '"><td>' + data.permission.id +
+                            var value = '<tr id="value_id_' + data.role.id +
+                                '"><td>' + data.role.id +
                                 '</td><td> <a id="show-value" data-id="' + data
-                                .permission.id + '" href="javascript:void(0)' + data
-                                .permission.id + '">' + data.permission.title +
-                                '</a></td><td>' + data.permission.slug + '</td>';
+                                .role.id + '" href="javascript:void(0)' + data
+                                .role.id + '">' + data.role.title +
+                                '</a></td><td>' + data.role.slug + '</td>';
                             value +=
                                 '<td><a href="javascript:void(0)" id="edit-value" data-id="' +
-                                data.permission.id +
+                                data.role.id +
                                 '" class="btn bg-blue btn-circle waves-effect waves-circle waves-float"><i class="material-icons">mode_edit</i></a> &nbsp;';
                             value +=
                                 ' <a href="javascript:void(0)" id="delete-value" data-id="' +
-                                data.permission.id +
+                                data.role.id +
                                 '" class="btn bg-red btn-circle waves-effect waves-circle waves-float"><i class="material-icons">delete_forever</i></a></td></tr>';
                             if (actionType == "create-value") {
                                 $('#values-crud').prepend(value);
                             } else {
-                                $("#value_id_" + data.permission.id).replaceWith(value);
+                                $("#value_id_" + data.role.id).replaceWith(value);
                             }
                             $('#valueForm').trigger("reset");
                             $('#msg_div').addClass('alert-success');

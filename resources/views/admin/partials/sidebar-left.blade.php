@@ -25,58 +25,29 @@
     <!-- Menu -->
     <div class="menu">
         <ul class="list">
-            <li class="header">MAIN NAVIGATION</li>
+            <li class="header">{{__('home.Menu')}}</li>
             <li class="active">
                 <a href="index.html">
                     <i class="material-icons">home</i>
-                    <span>Home</span>
+                    <span>{{__('home.Home')}}</span>
                 </a>
             </li>
             <li>
                 <a href="javascript:void(0);" class="menu-toggle">
                     <i class="material-icons">accessibility</i>
-                    <span>Management Users</span>
+                    <span>{{__('home.Management Users')}}</span>
                 </a>
                 <ul class="ml-menu">
                     <li>
-                        <a href="javascript:void(0);" class="menu-toggle">
-                            <span>Permissions</span>
-                        </a>
-                        <ul class="ml-menu">
-                            <li>
-                                <a href="{{Route('permission.index')}}">Create</a>
-                            </li>
-                            <li>
-                                <a href="{{Route('permission.index')}}">List</a>
-                            </li>
-                        </ul>
+                        <a href="{{Route('permission.index')}}" class=" waves-effect waves-block">{{__("home.Permissions")}}</a>
                     </li>
                     <li>
-                        <a href="javascript:void(0);" class="menu-toggle">
-                            <span>Roles</span>
-                        </a>
-                        <ul class="ml-menu">
-                            <li>
-                                <a href="pages/widgets/infobox/infobox-1.html">Create</a>
-                            </li>
-                            <li>
-                                <a href="pages/widgets/infobox/infobox-2.html">List</a>
-                            </li>
-                        </ul>
+                        <a href="{{Route('role.index')}}" class=" waves-effect waves-block">{{__("home.Roles")}}</a>
                     </li>
                     <li>
-                        <a href="javascript:void(0);" class="menu-toggle">
-                            <span>Users</span>
-                        </a>
-                        <ul class="ml-menu">
-                            <li>
-                                <a href="pages/widgets/infobox/infobox-1.html">Create</a>
-                            </li>
-                            <li>
-                                <a href="pages/widgets/infobox/infobox-2.html">List</a>
-                            </li>
-                        </ul>
+                        <a href="{{Route('user.index')}}" class=" waves-effect waves-block">{{__("home.Users")}}</a>
                     </li>
+                    
                 </ul>
             </li>
            

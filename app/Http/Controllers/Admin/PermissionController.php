@@ -53,7 +53,7 @@ class PermissionController extends Controller
             ['id' => $request->value_id],
             ['slug'=>$request->slug,'title'=>$request->title]
         );     
-        $arr = array('msg' => 'باموفقیت انجام شد!', 'status' => true);
+        $arr = array('status' => true);
         return response(["permission"=>$permission,"arr"=>$arr]);
         }
         return response(["arr"=>$arr,'errors'=>$validator->errors()->all()]);

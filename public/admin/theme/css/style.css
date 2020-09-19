@@ -5058,7 +5058,7 @@ section.content {
 }
 
 .switch label input[type=checkbox]:checked+.lever.switch-col-red:after {
-    background-color: #F44336;
+    background-color: #afa3a2;
 }
 
 .switch label input[type=checkbox]:checked:not(:disabled)~.lever.switch-col-pink:active:after {

@@ -1,7 +1,7 @@
 @extends('admin.layout.app')
 
 @section('title-page')
-<title>Permission</title>
+<title>{{__('home.Permissions')}}</title>
 @endsection
 
 @section('extra-css-header')
@@ -19,7 +19,7 @@
         <div class="card">
             <div class="header">
                 <h2>
-                    PERMISSIONS
+                    {{__('home.PERMISSIONS')}}
                 </h2>
                 <ul class="header-dropdown m-r--5">
                     <li class="dropdown">
@@ -28,10 +28,10 @@
                         </a>
                         <ul class="dropdown-menu pull-right js-sweetalert-asiye">
                             <li>
-                            <button type="button" class="btn bg-green waves-effec m-r-20" type="button" id="create-new-value" data-toggle="modal">
+                            <a  href="javascript:void(0);" class="btn bg-green waves-effec" id="create-new-value" data-toggle="modal">
                                 <i class="material-icons">add_circle</i>
-                                New Permission
-                            </button>
+                                {{__('home.New Permission')}}
+                            </a>
                             </li>
                         </ul>
                     </li>
@@ -265,6 +265,8 @@
                   $('#res_message').show();
               }else{
                   $('#msg_div').addClass('alert-danger');
+                  $('#btn-save').attr("disabled", false);
+                  $('#btn-save').html("{{__('home.SAVE RECORD')}}");
                   $('#msg_div').show();
                   $('#res_message').show();
                   jQuery('.alert-danger').append('<p>'+"{{__('home.error')}}"+'</p>');

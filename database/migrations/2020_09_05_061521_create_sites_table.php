@@ -15,10 +15,11 @@ class CreateSitesTable extends Migration
     {
         Schema::create('sites', function (Blueprint $table) {
             $table->id();
-            $table->string('logo');
-            $table->string('color');
-            $table->string('font');
-            $table->string('direction');
+            $table->string('logo')->nullable();
+            $table->string('color')->nullable();
+            $table->string('font')->nullable();
+            $table->string('direction')->default('ltr');
+            $table->string('default_image_user')->default('admin/theme/images/user.png');
             $table->timestamps();
         });
     }

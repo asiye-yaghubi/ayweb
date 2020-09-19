@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\Role;
+use App\Models\User;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session as FacadesSession;
 
@@ -16,6 +18,16 @@ use Illuminate\Support\Facades\Session as FacadesSession;
 
 Route::get('/', function () {
     return view('welcome');
+    $user = User::find(1);
+    
+    $user->roles()->sync(1);
+    dd('ll');
+    $user = User::findOrFail(1);
+    $role = $user->roles;
+    // dd(count($role));
+    // if($role) 
+    if(empty($user->roles))
+    dd("ok");
 });
 
 Auth::routes();
@@ -34,5 +46,10 @@ Route::group(['prefix' => 'manage','namespace' => 'Admin'], function () {
         return redirect()->back();
     });
     Route::resource('permission', 'PermissionController');
+    Route::resource('role', 'RoleController');
+    Route::resource('user', 'UserController');
+    Route::post('user/update', 'UserController@update')->name('user.update');
+
+
 
 });
