@@ -42,12 +42,12 @@ class UserController extends AdminController
      */
     public function store(Request $request)
     {
-         $validator = Validator::make($request->all(), [
+        $validator = Validator::make($request->all(), [
             'name' => 'required',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|confirmed|min:6',
             // 'role_id' =>'required',
-            // 'image' =>  'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image' =>  'image|mimes:jpeg,png,jpg,gif|max:2048',
 		]);
         $arr = array('status' => false);      
         if($validator->passes()){ 
@@ -56,17 +56,13 @@ class UserController extends AdminController
                 $status = 1;
             } else if($request->status == false) {
                 $status = 0;
-            }
-            // $pass = bcrypt($request->password);
+            }     
             $user = User::create([
                 'name'=>$request->name,
                 'email'=>$request->email,
                 'password'=>$password,
                 'status' => $status
                 ]); 
-
-            // 'password' => bcrypt($request['password']),
-
             $u = $user->roles()->sync($request->input('role_id'));
             if($request['image']) {
                 $file = $request->file('image');
@@ -86,16 +82,13 @@ class UserController extends AdminController
                 }
             }  
             else{
-                $select[] = [0 => false];
+                $select[] = [0 => 'false'];
             }  
             
             $arr = array('status' => true);
             return response(["user"=>$user,"arr"=>$arr, "select" => $select, 'pic'=>$pic]);
         }
-        return response(["arr"=>$arr,'errors'=>$validator->errors()->all()]);
-
-        
-    
+        return response(["arr"=>$arr,'errors'=>$validator->errors()->all()]);  
     }
 
     /**

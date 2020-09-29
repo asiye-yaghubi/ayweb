@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Category;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
@@ -17,17 +18,11 @@ use Illuminate\Support\Facades\Session as FacadesSession;
 */
 
 Route::get('/', function () {
-    return view('welcome');
-    $user = User::find(1);
-    
-    $user->roles()->sync(1);
-    dd('ll');
-    $user = User::findOrFail(1);
-    $role = $user->roles;
-    // dd(count($role));
-    // if($role) 
-    if(empty($user->roles))
-    dd("ok");
+    // return view('welcome');
+    $category = Category::find(7);
+    $tags = $category->tag;
+    dd($tags);
+
 });
 
 Auth::routes();
@@ -49,6 +44,14 @@ Route::group(['prefix' => 'manage','namespace' => 'Admin'], function () {
     Route::resource('role', 'RoleController');
     Route::resource('user', 'UserController');
     Route::post('user/update', 'UserController@update')->name('user.update');
+    Route::resource('category', 'CategoryController');
+    Route::post('category/update', 'CategoryController@update')->name('category.update');
+    Route::resource('tag', 'TagController');
+    Route::resource('post', 'PostController');
+
+
+    
+
 
 
 

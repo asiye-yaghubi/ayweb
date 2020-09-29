@@ -4,12 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Tag extends Model
+class Icon extends Model
 {
     protected $fillable = [
-        'title', 'slug'
+        'class',
     ];
     public function category() {
-        return $this->morphedByMany(Category::class, "tagable");
+        return $this->hasMany(Category::class);
     }
 }

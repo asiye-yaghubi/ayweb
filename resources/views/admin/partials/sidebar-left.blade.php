@@ -50,6 +50,24 @@
                     
                 </ul>
             </li>
+            <li>
+                <a href="{{Route('category.index')}}">
+                    <i class="material-icons">home</i>
+                    <span>{{__('home.Category')}}</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{Route('tag.index')}}">
+                    <i class="material-icons">home</i>
+                    <span>{{__('home.Tag')}}</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{Route('post.index')}}">
+                    <i class="material-icons">home</i>
+                    <span>{{__('home.Post')}}</span>
+                </a>
+            </li>
            
         </ul>
     </div>
