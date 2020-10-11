@@ -5,12 +5,12 @@
             <img src="/admin/theme/images/user.png" width="48" height="48" alt="User" />
         </div>
         <div class="info-container">
-            <div class="name" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">John Doe</div>
-            <div class="email">john.doe@example.com</div>
+            <div class="name" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{auth()->user()->name}}</div>
+            <div class="email">{{auth()->user()->email}}</div>
             <div class="btn-group user-helper-dropdown">
                 <i class="material-icons" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">keyboard_arrow_down</i>
                 <ul class="dropdown-menu pull-right">
-                    <li><a href="javascript:void(0);"><i class="material-icons">person</i>Profile</a></li>
+                    <li><a href="{{ route('profile.index') }}"><i class="material-icons">person</i>{{__('home.Profile')}}</a></li>
                     <li role="separator" class="divider"></li>
                     <li><a href="javascript:void(0);"><i class="material-icons">group</i>Followers</a></li>
                     <li><a href="javascript:void(0);"><i class="material-icons">shopping_cart</i>Sales</a></li>
@@ -24,17 +24,19 @@
     <!-- #User Info -->
     <!-- Menu -->
     <div class="menu">
+        @if(auth()->user()->type=='admin')
         <ul class="list">
             <li class="header">{{__('home.Menu')}}</li>
-            <li class="active">
-                <a href="index.html">
+            <li>
+                <a href="{{Route('home')}}">
                     <i class="material-icons">home</i>
                     <span>{{__('home.Home')}}</span>
                 </a>
             </li>
+        @can('create_user')
             <li>
                 <a href="javascript:void(0);" class="menu-toggle">
-                    <i class="material-icons">accessibility</i>
+                    <i class="material-icons">group</i>
                     <span>{{__('home.Management Users')}}</span>
                 </a>
                 <ul class="ml-menu">
@@ -50,26 +52,35 @@
                     
                 </ul>
             </li>
+            @endcan
+            <li>
+                <a href="{{Route('post.index')}}">
+                    <i class="material-icons">collections_bookmark</i>
+                    <span>{{__('home.Post')}}</span>
+                </a>
+            </li>
             <li>
                 <a href="{{Route('category.index')}}">
-                    <i class="material-icons">home</i>
+                    <i class="material-icons">format_indent_decrease</i>
                     <span>{{__('home.Category')}}</span>
                 </a>
             </li>
             <li>
                 <a href="{{Route('tag.index')}}">
-                    <i class="material-icons">home</i>
+                    <i class="material-icons">filter_vintage</i>
                     <span>{{__('home.Tag')}}</span>
                 </a>
             </li>
             <li>
-                <a href="{{Route('post.index')}}">
-                    <i class="material-icons">home</i>
-                    <span>{{__('home.Post')}}</span>
+                <a href="{{Route('tag.index')}}">
+                    <i class="material-icons">insert_emoticon</i>
+                    <span>{{__('home.Icon')}}</span>
                 </a>
             </li>
+            
            
         </ul>
+        @endif
     </div>
     <!-- #Menu -->
     <!-- Footer -->
@@ -83,3 +94,10 @@
     </div> --}}
     <!-- #Footer -->
 </aside>
+
+
+
+
+
+
+

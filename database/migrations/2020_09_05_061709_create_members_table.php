@@ -15,10 +15,12 @@ class CreateMembersTable extends Migration
     {
         Schema::create('members', function (Blueprint $table) {
             $table->id();
-            $table->string('description')->nullable();
-            $table->string('degree')->nullable();
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
+            $table->string('skill')->nullable();
+            $table->string('education')->nullable();
+            $table->string('location')->nullable();
+            $table->text('description')->nullable();
             $table->timestamps();
         });
     }

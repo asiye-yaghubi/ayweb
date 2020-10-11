@@ -12,8 +12,8 @@
 
 @section('content')
 <ol class="breadcrumb breadcrumb-col-cyan">
-    <li><a href="javascript:void(0);"><i class="material-icons">home</i> {{__('home.Home')}}</a></li>
-    <li class="active"><i class="material-icons">accessibility</i> {{__('home.Categories')}}</li>
+    <li><a href="{{route('home')}}"><i class="material-icons">home</i> {{__('home.Home')}}</a></li>
+    <li class="active"><i class="material-icons">format_indent_decrease</i> {{__('home.Categories')}}</li>
 </ol>
 <div class="row clearfix">
     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">

@@ -36,10 +36,27 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
     public function images() {
         return $this->morphMany(Image::class, "imageable");
     }
+
     public function roles() {
         return $this->belongsToMany(Role::class);
+    }
+
+    public function hasRole($role){
+        if(is_string($role))
+        {
+            return $this->roles->contains('slug',$role);
+        }
+        foreach($role as $val)
+        {
+            if($this->hasRole($val->slug))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 }

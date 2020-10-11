@@ -1,8 +1,8 @@
 <?php
 
-use App\Models\Category;
-use App\Models\Role;
+use App\Models\Image;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session as FacadesSession;
 
@@ -18,10 +18,14 @@ use Illuminate\Support\Facades\Session as FacadesSession;
 */
 
 Route::get('/', function () {
-    // return view('welcome');
-    $category = Category::find(7);
-    $tags = $category->tag;
-    dd($tags);
+    // $user = Auth::user();
+    $user = auth()->user();
+    $u = User::find($user->id);
+    $photo = new Image();
+    $photo->url = 'lllll';
+    $u->images()->save($photo);
+    dd($user->id);
+    return view('welcome');
 
 });
 
@@ -29,12 +33,12 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
-Route::get('/test', function () {
-    return view('admin.pages.index');
-});
+// Route::get('/test', function () {
+//     return view('admin.pages.index');
+// });
 
 
-Route::group(['prefix' => 'manage','namespace' => 'Admin'], function () {
+Route::group(['prefix' => 'manage','middleware'=>['auth','UserLevel'],'namespace' => 'Admin'], function () {
 
     Route::get('locale/{locale}',function($locale){
         FacadesSession::put('locale',$locale);
@@ -48,6 +52,17 @@ Route::group(['prefix' => 'manage','namespace' => 'Admin'], function () {
     Route::post('category/update', 'CategoryController@update')->name('category.update');
     Route::resource('tag', 'TagController');
     Route::resource('post', 'PostController');
+    Route::post('post/update', 'PostController@update')->name('post.update');
+    Route::get('post/description/{post}', 'PostController@createDescription')->name('post.description');
+    Route::post('post/uploadImage', 'PostController@uploadImage')->name('upload');
+
+    Route::post('post/description', 'PostController@saveDescription')->name('save.description');
+    Route::get('post/show/description/{post}', 'PostController@showDescription')->name('show.description');
+
+
+    Route::resource('profile', 'ProfileController');
+
+    Route::post('change-profile', 'ProfileController@changeImage')->name('change-profile');
 
 
     
@@ -56,3 +71,4 @@ Route::group(['prefix' => 'manage','namespace' => 'Admin'], function () {
 
 
 });
+Route::get('/userpanel', 'HomeController@userpanel');

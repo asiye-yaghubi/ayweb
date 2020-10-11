@@ -10,8 +10,8 @@
 
 @section('content')
 <ol class="breadcrumb breadcrumb-col-cyan">
-    <li><a href="javascript:void(0);"><i class="material-icons">home</i>  {{__('home.Home')}}</a></li>
-    <li class="active"><i class="material-icons">accessibility</i>  {{__('home.Tags')}}</li>
+    <li><a href="{{route('home')}}"><i class="material-icons">home</i>  {{__('home.Home')}}</a></li>
+    <li class="active"><i class="material-icons">filter_vintage</i>  {{__('home.Tags')}}</li>
 </ol>
 
   <div class="row clearfix">

@@ -10,7 +10,7 @@
 
 @section('content')
 <ol class="breadcrumb breadcrumb-col-cyan">
-    <li><a href="javascript:void(0);"><i class="material-icons">home</i>  {{__('home.Home')}}</a></li>
+    <li><a href="{{route('home')}}"><i class="material-icons">home</i>  {{__('home.Home')}}</a></li>
     <li class="active"><i class="material-icons">accessibility</i>  {{__('home.Permissions')}}</li>
 </ol>
 

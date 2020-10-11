@@ -1,6 +1,8 @@
 
 <!-- Jquery Core Js -->
 <script src="/admin/theme/plugins/jquery/jquery.min.js"></script>
+{{-- <script src="{{ asset('admin/theme/plugins/jquery/jquery.min.js')}}"></script> --}}
+
 
 <!-- Jquery Validate Js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.js"></script>

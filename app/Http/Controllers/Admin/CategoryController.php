@@ -179,6 +179,7 @@ class CategoryController extends AdminController
                 $path = 'categories/';
                 $image = $this->ImageUploader($file,$path);
                 $photo = $category->images()->first();
+                unlink($photo->url) or die('Delete Error');
                 $photo->url = $image;
                 $photo->update();
                 $pic = ['path'=>$image];

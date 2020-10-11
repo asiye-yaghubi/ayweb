@@ -85,13 +85,13 @@ class RoleController extends Controller
         // dd('kk');
         $where = array('id' => $id);
         $role  = Role::where($where)->first();
-        if($role->permissions) {
+        if(count($role->permissions)) {
             foreach($role->permissions as $item) {
                 $select[] = $item->title;
             }
         }  
         else{
-            $select[] = [0 => false];
+            $select[] = [0 => 'false'];
         }  
         // dd($select); 
         

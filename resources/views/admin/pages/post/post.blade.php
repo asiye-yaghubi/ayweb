@@ -1,7 +1,7 @@
 @extends('admin.layout.app')
 
 @section('title-page')
-<title>{{__('home.Categories')}}</title>
+<title>{{__('home.Posts')}}</title>
 @endsection
 
 @section('extra-css-header')
@@ -12,15 +12,15 @@
 
 @section('content')
 <ol class="breadcrumb breadcrumb-col-cyan">
-    <li><a href="javascript:void(0);"><i class="material-icons">home</i> {{__('home.Home')}}</a></li>
-    <li class="active"><i class="material-icons">accessibility</i> {{__('home.Categories')}}</li>
+    <li><a href="{{route('home')}}"><i class="material-icons">home</i> {{__('home.Home')}}</a></li>
+    <li class="active"><i class="material-icons">collections_bookmark</i> {{__('home.Posts')}}</li>
 </ol>
 <div class="row clearfix">
     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
         <div class="card">
             <div class="header">
                 <h2>
-                    {{__('home.CATEGORIES')}}
+                    {{__('home.POSTS')}}
                 </h2>
                 <ul class="header-dropdown m-r--5">
                     <li class="dropdown">
@@ -30,10 +30,10 @@
                         </a>
                         <ul class="dropdown-menu pull-right js-sweetalert-asiye">
                             <li>
-                                <a href="javascript:void(0);" class="btn bg-green waves-effec" 
+                                <a href="javascript:void(0)" class="btn bg-green waves-effec" 
                                     id="create-new-value" data-toggle="modal">
                                     <i class="material-icons">add_circle</i>
-                                    {{__('home.New Category')}}
+                                    {{__('home.New Post')}}
                                 </a>
                             </li>
                         </ul>
@@ -50,26 +50,33 @@
                                 <th>{{__('home.id')}}</th>
                                 <th>{{__('home.Title')}}</th>
                                 <th>{{__('home.Slug')}}</th>
-                                <th>{{__('home.icon')}}</th>
-                                <th>{{__('home.status')}}</th>
-                                <th>{{__('home.Subcategory')}}</th>
+                                <th>{{__('home.Category')}}</th>
                                 <th>{{__('home.Tags')}}</th>
+                                <th>{{__('home.Author')}}</th>
+                                <th>{{__('home.status')}}</th>
                                 <th>{{__('home.Image')}}</th>
+                                <th>{{__('home.Description')}}</th>
                                 <th>{{__('home.Edit')}}</th>
                                 <th>{{__('home.Delete')}}</th>
 
                             </tr>
                         </thead>
                         <tbody id="values-crud">
-                            @foreach ($categorys as $u_info)
+                            @foreach ($posts as $u_info)
                             <tr id="value_id_{{ $u_info->id }}">
                                 <td id="index">{{ $loop->iteration }}</td>
                                 <td><a href="javascript:void(0)" data-id="{{ $u_info->id }}"
                                         id="show-value">{{ $u_info->title }}</a></td>
                                 <td>{{ $u_info->slug }}</td>
                                 <td>
-                                    <i class="material-icons">{{ $u_info->icon->class }}</i>{{ $u_info->icon->class }}
+                                    {{ $u_info->category->title }} 
                                 </td>
+                                <td>
+                                    @foreach ($u_info->tag as $item)
+                                        {{ $item->title }}
+                                    @endforeach
+                                </td>
+                                <td>{{ $u_info->user->name ?? ''}}</td>
                                 <td>
                                     @if ($u_info->status)
                                         <span class="label bg-green">{{__('home.Active')}}</span>
@@ -77,34 +84,24 @@
                                         <span class="label bg-red">{{__('home.Inactive')}}</span>
                                     @endif
                                 </td>
-                                
-                                <td class="align-left">
-                                    @if(count($u_info->childs))
-                                        @foreach ($u_info->childs as $item)
-                                        <a style="display: block" href="javascript:void(0)" class="edit-value" data-id="{{ $item->id }}">
-                                            {{ $item->title ?? ''}} => {{ $u_info->title ?? ''}}
-                                        </a>
-                                        @if(count($item->childs))
-                                            @include('admin.pages.category.subCategoryList',['subcategories' => $item->childs])
-                                            
-                                        @endif
-                                        @endforeach
-                                    @else
-                                        {{__('home.Without Subcategory')}}
-                                    @endif
-                                    
-                                </td>
-                                <td>
-                                    @foreach ($u_info->tag as $item)
-                                        {{ $item->title }}
-                                    @endforeach
-                                </td>
-                                
-                                
                                 <td>
                                     @if ($u_info->images()->first())
                                         <img src="/{{ $u_info->images()->first()->url }}" width="48" height="48" alt="User" />
                                     @endif
+                                </td>
+                                <td>
+                                    @if ($u_info->description)
+                                    <a href="{{ route('post.description', ['post'=>$u_info]) }}" id="edit-value"
+                                        class="btn bg-blue btn-circle waves-effect waves-circle waves-float edit-value">
+                                        <i class="material-icons">mode_edit</i>
+                                    </a>
+                                    @else
+                                    <a href="{{ route('post.description', ['post'=>$u_info]) }}" id="edit-value"
+                                        class="btn bg-green btn-circle waves-effect waves-circle waves-float edit-value">
+                                        <i class="material-icons">add_circle</i>
+                                    </a>
+                                    @endif
+                                    
                                 </td>
                                 <td>
                                     <a href="javascript:void(0)" id="edit-value" data-id="{{ $u_info->id }}"
@@ -163,17 +160,6 @@
                         <input type="file" class="form-control" id="image" name="image">
                         <span id="store_image"></span>
                     </div>
-                    <div class="col-sm-12 m-t-10 icons">
-                        <p>
-                            <b>{{__('home.Select Icon')}}</b>
-                        </p>
-                        <select class="form-control show-tick"  name="icon_id" id="icon_id">
-                            @foreach ($icons as $item)
-                            <option value="{{ $item->id }}" data-content="<i class='material-icons'>{{ $item->class }}</i>{{ $item->class }}"></option>
-                            @endforeach
-                        </select>
-                    </div>
-
                     
                   
                     <div class="col-sm-12 m-t-10 tags">
@@ -186,21 +172,16 @@
                             @endforeach
                         </select>
                     </div>
-                    <div class="col-sm-12 m-t-10 tags">
+                    <div class="col-sm-12 m-t-10 cats">
                         <p>
                             <b>{{__('home.Select Category Leader')}}</b>
                         </p>
-                        <select class="form-control show-tick"  name="parent_id" id="parent_id">
-                            <option value="0">
-                                {{__('home.Leader')}}
-                            </option>
+                        <select class="form-control show-tick"  name="category_id" id="category_id">
                             @foreach ($categorys as $item)
                                 <option value="{{ $item->id }}">
-                                    {{ $item->name ?? ''}}
+                                    {{ $item->title ?? ''}}
                                 </option>
-                                @if(!empty($item->children))
-                                    @include('Places.Attractions.categories.subCategoryList',['subcategories' => $item->children])
-                                @endif 
+                                
                             @endforeach
                         </select>
                     </div>
@@ -266,7 +247,7 @@
             event.preventDefault();
             if ($('#action').val() == 'Add') {
                 $.ajax({
-                    url: "{{ route('category.store') }}",
+                    url: "{{ route('post.store') }}",
                     method: "POST",
                     data: new FormData(this),
                     contentType: false,
@@ -292,38 +273,39 @@
                         }
                         if (data.arr.status) {
 
-                            if(data.category != 'false') {
+                           
+                        var value = '<tr id="value_id_' + data.post.id + '"><td>' + data.post.id +                   
+                        '</td><td> <a id="show-value" data-id="' + data.post.id + '" href="javascript:void(0)' + 
+                        data.post.id + '">' + data.post.title +'</a></td><td>' + data.post.slug + '</td><td>'
+                        + data.category.title + '</td>';
+                        var tags = data.tags.toString();
+                        value += '</td><td>' + tags + '</td>';
+                        value += '</td><td>' + data.user.name + '</td>';
 
-                                var value = '<tr id="value_id_' + data.category.id + '"><td>' + data.category.id +                   
-                                '</td><td> <a id="show-value" data-id="' + data.category.id + '" href="javascript:void(0)' + 
-                                data.category.id + '">' + data.category.title +'</a></td><td>' + data.category.slug + '</td><td><i class="material-icons">'
-                                + data.icon.class + '</i></td>';
+                        if(data.post.status){
+                            value += '<td><span class="label bg-green">{{__("home.Active")}}</span></td>';
+                        } else {
+                            value += '<td><span class="label bg-red">{{__("home.Inactive")}}</span></td>';
+                        }
 
-                                if(data.category.status){
-                                    value += '<td><span class="label bg-green">{{__("home.Active")}}</span></td><td>';
-                                } else {
-                                    value += '<td><span class="label bg-red">{{__("home.Inactive")}}</span></td><td class="align-left">';
-                                }
+                        value += '<td><img src="/'+ data.pic.path +'" width="48" height="48" alt="User" /></td>';
 
-                                if(data.childs == 'false') {
-                                    value += "{{__('home.Without Subcategory')}}";
-                                    
-                                } else {
-                                    var childs = data.childs.toString();
-                                    value += childs;
-                                }
-                                
-                                var tags = data.tags.toString();
-                                value += '</td><td>' + tags + '</td>';
+                        if(data.post.description) {
+                            value += '<td><a href="#" id="edit-value" data-id="' + data.post.id +
+                            '" class="btn bg-blue btn-circle waves-effect waves-circle waves-float"><i class="material-icons">mode_edit</i></a> </td>';
 
-                                value += '<td><img src="/'+ data.pic.path +'" width="48" height="48" alt="User" /></td>';
+                        } else {
+                            value += '<td><a href="#" id="edit-value" data-id="' + data.post.id +
+                            '" class="btn bg-green btn-circle waves-effect waves-circle waves-float"><i class="material-icons">add_circle</i></a> </td>';
+                        }
+                        
+                        value += '<td><a href="javascript:void(0)" id="edit-value" data-id="' + data.post.id +
+                        '" class="btn bg-blue btn-circle waves-effect waves-circle waves-float"><i class="material-icons">mode_edit</i></a> </td>';
 
-                                value += '<td><a href="javascript:void(0)" id="edit-value" data-id="' + data.category.id +
-                                '" class="btn bg-blue btn-circle waves-effect waves-circle waves-float"><i class="material-icons">mode_edit</i></a> </td><td>';
-                                value += ' <a href="javascript:void(0)" id="delete-value" data-id="' +data.category.id +    
-                                '" class="btn bg-red btn-circle waves-effect waves-circle waves-float"><i class="material-icons">delete_forever</i></a></td></tr>';
-                                $('#values-crud').prepend(value);
-                            }
+                        value += '<td> <a href="javascript:void(0)" id="delete-value" data-id="' +data.post.id +    
+                        '" class="btn bg-red btn-circle waves-effect waves-circle waves-float"><i class="material-icons">delete_forever</i></a></td></tr>';
+                        $('#values-crud').prepend(value);
+                            
                             
                             $('#msg_div').removeClass('alert-danger');
                             $('#valueForm')[0].reset();
@@ -350,7 +332,7 @@
             }
             if ($('#action').val() == "Edit") {
                 $.ajax({
-                    url: "{{ route('category.update') }}",
+                    url: "{{ route('post.update') }}",
                     method: "POST",
                     data: new FormData(this),
                     contentType: false,
@@ -375,44 +357,41 @@
                             });
                         }
                         if (data.arr.status) {
-                            if(data.category != 'false') {
+                           
 
-                                var value = '<tr id="value_id_' + data.category.id + '"><td>' + data.category.id +                   
-                                '</td><td> <a id="show-value" data-id="' + data.category.id + '" href="javascript:void(0)' + 
-                                data.category.id + '">' + data.category.title +'</a></td><td>' + data.category.slug + '</td><td><i class="material-icons">'
-                                + data.icon.class + '</i></td>';
-
-                                if(data.category.status){
-                                    value += '<td><span class="label bg-green">{{__("home.Active")}}</span></td><td>';
-                                } else {
-                                    value += '<td><span class="label bg-red">{{__("home.Inactive")}}</span></td><td class="align-left">';
-                                }
-
-                                if(data.childs == 'false') {
-                                    value += "{{__('home.Without Subcategory')}}";
-                                    
-                                } else {
-                                    var childs = data.childs.toString();
-                                    value += childs;
-                                }
-
-                                var tags = data.tags.toString();
-                                value += '</td><td>' + tags + '</td>';
-
-                                value += '<td><img src="/'+ data.pic.path +'" width="48" height="48" alt="User" /></td>';
-
-                                value += '<td><a href="javascript:void(0)" id="edit-value" data-id="' + data.category.id +
-                                '" class="btn bg-blue btn-circle waves-effect waves-circle waves-float"><i class="material-icons">mode_edit</i></a> </td><td>';
-                                value += ' <a href="javascript:void(0)" id="delete-value" data-id="' +data.category.id +    
-                                '" class="btn bg-red btn-circle waves-effect waves-circle waves-float"><i class="material-icons">delete_forever</i></a></td></tr>';
-
-                                if(data.category.parent_id == 0) {
-                                    $('#values-crud').prepend(value);
-                                }
-                                else {
-                                    $("#value_id_" + data.user.id).replaceWith(value);
-                                }
+                            var value = '<tr id="value_id_' + data.post.id + '"><td>' + data.post.id +                   
+                            '</td><td> <a id="show-value" data-id="' + data.post.id + '" href="javascript:void(0)' + 
+                            data.post.id + '">' + data.post.title +'</a></td><td>' + data.post.slug + '</td><td>'
+                            + data.category.title + '</td>';
+                            var tags = data.tags.toString();
+                            value += '</td><td>' + tags + '</td>';
+                            if(data.user) {
+                                value += '<td>' + data.user.name + '</td>';
                             }
+
+                            if(data.post.status){
+                                value += '<td><span class="label bg-green">{{__("home.Active")}}</span></td>';
+                            } else {
+                                value += '<td><span class="label bg-red">{{__("home.Inactive")}}</span></td>';
+                            }
+
+                            value += '<td><img src="/'+ data.pic.path +'" width="48" height="48" alt="User" /></td>';
+
+                            if(data.post.description) {
+                                value += '<td><a href="#" id="edit-value" data-id="' + data.post.id +
+                                '" class="btn bg-blue btn-circle waves-effect waves-circle waves-float"><i class="material-icons">mode_edit</i></a> </td>';
+
+                            } else {
+                                value += '<td><a href="#" id="edit-value" data-id="' + data.post.id +
+                                '" class="btn bg-green btn-circle waves-effect waves-circle waves-float"><i class="material-icons">add_circle</i></a> </td>';
+                            }
+                            
+                            value += '<td><a href="javascript:void(0)" id="edit-value" data-id="' + data.post.id +
+                            '" class="btn bg-blue btn-circle waves-effect waves-circle waves-float"><i class="material-icons">mode_edit</i></a> </td>';
+
+                            value += '<td> <a href="javascript:void(0)" id="delete-value" data-id="' +data.post.id +    
+                            '" class="btn bg-red btn-circle waves-effect waves-circle waves-float"><i class="material-icons">delete_forever</i></a></td></tr>';
+                            $('#values-crud').prepend(value);
 
                                 $('#msg_div').removeClass('alert-danger');
                                 $('#valueForm')[0].reset();
@@ -442,7 +421,7 @@
         $(document).on('click', '.edit-value', function() {
             var value_id = $(this).data('id');
             $.ajax({
-                url: "{{ url('manage/category')}}" + '/' + value_id + '/edit',
+                url: "{{ url('manage/post')}}" + '/' + value_id + '/edit',
                 dataType: "json",
                 success: function(data) {
                     $('#msg_div').empty();
@@ -456,20 +435,20 @@
                     $('#msg_div').removeClass('alert-success');
                     $('#action_button').html("{{__('home.EDIT RECORD')}}");
                     $('#action').val("Edit");
-                    if(data.category.status == 1) {
+                    if(data.post.status == 1) {
                         $('#status').prop('checked', true);
                     }else {
                         $('#status').prop('checked', false);
                     } 
                     $('#ajax-crud-modal').modal('show');
-                    $('#value_id').val(data.category.id);
-                    $('#title').val(data.category.title);
-                    $('#slug').val(data.category.slug);
+                    $('#value_id').val(data.post.id);
+                    $('#title').val(data.post.title);
+                    $('#slug').val(data.post.slug);
                     $('#store_image').html('<img src="/' + data.pic.path + '" width="48" height="48" alt="User" />');
 
-                    $('.icons .filter-option').text(data.icon.class);
+                    $('.cats .filter-option').text(data.category.title);
                     $(".icons .inner li").each((id, elem) => { 
-                        if ($(elem).text().trim() == data.icon.class) { 
+                        if ($(elem).text().trim() == data.category.title) { 
                             $(elem).addClass('selected');
                         } 
                     }); 
@@ -485,26 +464,7 @@
                         }); 
                     });
 
-                    $('.parents .inner>li').removeClass('selected');
-                    if(data.category.parent_id == 0) {
-                        $(".parents .inner li").each((id, elem) => { 
-                            if ($(elem).text().trim() == "{{ __('home.Category Leader') }}") { 
-                                $(elem).addClass('selected');
-                            } 
-                        }); 
-                         
-                    } else {
-                        $('.parents .filter-option').text('');
-                        $(".parents .inner li").each((id, elem) => { 
-                            var str = $(elem).text().trim().split(" ").join("");
-                            var substr = data.category.title  +"\n=>" +  data.parent.title;
-                            if (str.indexOf(substr) == 0) { 
-                                $('.parents .filter-option').append(str + ',');
-                                $(elem).addClass('selected');
-                            } 
-                        }); 
-                    }
-                
+                 
                 }
             })
         });
@@ -512,19 +472,20 @@
         /* When click show value */
         $('body').on('click', '#show-value', function() {
             var value_id = $(this).data('id');
-            $.get("{{ url('manage/category')}}" + '/' + value_id + '/edit', function(data) {
-                var roles_select = data.select.toString();
+            $.get("{{ url('manage/post')}}" + '/' + value_id + '/edit', function(data) {
+                var tags_select = data.tags.toString();
                 // alert(permissions_select);
                 swal({
                     title: "<span style=\"color: #607D8B\"><span style=\"color: #00BCD4\">Id : </span>" +
-                        data.user.id + "</span>",
+                        data.post.id + "</span>",
                     text: "<div style=\"color: #607D8B\"><span style=\"color: #00BCD4\">Name : </span>" +
-                        data.user.name +
+                        data.post.title +
                         "</div><div style=\"color: #607D8B\"><span style=\"color: #00BCD4\">Email : </span>" +
-                        data.user.email +
+                        data.user.slug +
                         "</div><div style=\"color: #607D8B\"><span style=\"color: #00BCD4\">Roles : </span>" 
                         + "<span id='per'>" 
-                        + roles_select
+                        + tags_select
+
                         + "</span></div>",
                     html: true,
                 });   
@@ -547,7 +508,7 @@
                 if (isConfirm) {
                     $.ajax({
                         type: "DELETE",
-                        url: "{{ url('manage/category')}}" + '/' + value_id,
+                        url: "{{ url('manage/post')}}" + '/' + value_id,
                         success: function(data) {
                             if(data.status == 'error') {
                                 swal("{{__('home.Unable to delete a row')}}",
