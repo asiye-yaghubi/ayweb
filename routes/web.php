@@ -19,13 +19,13 @@ use Illuminate\Support\Facades\Session as FacadesSession;
 
 Route::get('/', function () {
     // $user = Auth::user();
-    $user = auth()->user();
-    $u = User::find($user->id);
-    $photo = new Image();
-    $photo->url = 'lllll';
-    $u->images()->save($photo);
-    dd($user->id);
-    return view('welcome');
+    // $user = auth()->user();
+    // $u = User::find($user->id);
+    // $photo = new Image();
+    // $photo->url = 'lllll';
+    // $u->images()->save($photo);
+    // dd($user->id);
+    return view('weblog.pages.index');
 
 });
 

@@ -1,0 +1,9 @@
+<script src="/weblog/vendors/jquery/jquery-3.2.1.min.js"></script>
+<script src="/weblog/vendors/bootstrap/bootstrap.bundle.min.js"></script>
+<script src="/weblog/vendors/owl-carousel/owl.carousel.min.js"></script>
+<script src="/weblog/vendors/Magnific-Popup/jquery.magnific-popup.min.js"></script>
+<script src="/weblog/js/jquery.ajaxchimp.min.js"></script>
+<script src="/weblog/js/mail-script.js"></script>
+<script src="/weblog/js/countdown.js"></script>
+<script src="/weblog/js/jquery.magnific-popup.min.js"></script>
+<script src="/weblog/js/main.js"></script>

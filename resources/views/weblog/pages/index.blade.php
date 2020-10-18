@@ -1,0 +1,1 @@
+@extends('weblog.layout.app')
